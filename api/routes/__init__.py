@@ -27,10 +27,10 @@ from .synonym import *
 from agents_service import AgentsService
 AgentsService.get_instance().starting_load_agents()
 
-from user_service import UserService
-exist_user = UserService.get_instance().exist_user()
-if not exist_user:
-        UserService.get_instance().add_new_user(os.environ.get("ADMIN_LOGIN"), "Admin", "Admin", os.environ.get("ADMIN_PWD"))
+from users_service import UsersService
+exist_super_admin_user = UsersService.get_instance().exist_super_admin_user()
+if not exist_super_admin_user:
+        UsersService.get_instance().add_new_user(os.environ.get("ADMIN_LOGIN"), "Boticot", "Admin", os.environ.get("ADMIN_PWD"), "super-admin", [])
 
 @current_app.route( "/", methods=["GET"])
 def index():

@@ -45,11 +45,41 @@ class UsersRepository():
             page_size = max_page_size
         return(self.users_inputs_collection.find({"agent_name": agent_name, "user_id": user_id, "intent.confidence": {"$lt": max_confidence, "$gt": min_confidence}}, {"agent_name": 0}).skip((page_number - 1) * page_size).limit(page_size))
 
+    def find_all_users(self):
+        return self.users_collection.find({})
+
     def add_user(self, user):
         return(self.users_collection.insert_one(user))
 
     def get_user(self, email):
         return self.users_collection.find_one({"email": email})
 
-    def get_one_user(self):
-        return self.users_collection.find_one({})
+    def get_one_user_by_role(self, role):
+        return self.users_collection.find_one({"role": role})
+
+    def update_user_password(self, email, new_password):
+        return self.users_collection.update_one(
+            {"email": email}, 
+            {"$set": 
+                {
+                    "password": new_password, 
+                    "is_first_login": False
+                }
+            }
+        )
+    
+    def update_user_data(self, email, first_name, last_name, role, agents):
+        return self.users_collection.update_one(
+            {"email": email}, 
+            {"$set": 
+                {
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "role": role,
+                    "agents": agents
+                }
+            }
+        )
+
+    def delete_user(self, email):
+        self.users_collection.delete_one({"email": email})

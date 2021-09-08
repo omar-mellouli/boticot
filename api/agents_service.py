@@ -7,6 +7,7 @@ from agent import Agent
 from utils import remove_file_or_dir
 from responses_service import ResponsesService
 from synonyms_service import SynonymsService
+from users_service import UsersService
 from persistence.agents_repository import AgentsRepository
 from persistence.lookups_repository import LookupsRepository
 from persistence.synonyms_repository import SynonymsRepository
@@ -104,8 +105,11 @@ class AgentsService(object):
         """Get Bots loaded in memory""" 
         return self.bots
 
-    def get_agents(self):
+    def get_agents(self, email):
         db_agents = self.agents_repository.get_all_agents()
+        user = UsersService.get_instance().find_user(email)
+        if (not UsersService.get_instance().is_role_super_admin(user.get("role"))):
+            db_agents = filter(lambda agent: agent.get("name") in user.get("agents"), list(db_agents))
         agents = []
         for entry in db_agents:
             agents.append(json.loads(MongoJSONEncoder().encode(entry)))

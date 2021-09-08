@@ -1,7 +1,7 @@
 import os
 from utils import response_template, remove_file_or_dir, create_folder
 from flask import request, jsonify
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
 import sys
 sys.path.append("..")
@@ -11,7 +11,7 @@ from flask import current_app, send_from_directory
 @current_app.route("/nlu/agents", methods=["GET"])
 @jwt_required
 def get_all_agents():
-    agents = AgentsService.get_instance().get_agents()
+    agents = AgentsService.get_instance().get_agents(get_jwt_identity())
     return jsonify(agents)
 
 @current_app.route("/nlu/agents/<agent_name>", methods=["GET"])
