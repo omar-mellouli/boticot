@@ -1,5 +1,3 @@
-language: ruby
-
 services:
   - docker
 
@@ -7,7 +5,3 @@ before_install:
   - docker build -t boticot/api ./api
   - docker run -d -p 127.0.0.1:80:4567 boticot/api /bin/sh -c "ls"
   - docker ps -a
-  - docker run boticot/api /bin/sh -c "bundle exec rake test"
-
-script:
-  - bundle exec rake test
